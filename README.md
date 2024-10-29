@@ -56,10 +56,10 @@ To set up user, run `python manage.py createsuperuser`
 
 1. Data Models: 
 
-ID: BigAutoField
-name: CharField
-power_usage: FloatField
-is_on: BooleanField(default=False)
+* ID: BigAutoField
+* name: CharField
+* power_usage: FloatField
+* is_on: BooleanField(default=False)
 
 2. API Design:
 

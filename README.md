@@ -1,106 +1,93 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fdjango&demo-title=Django%20%2B%20Vercel&demo-description=Use%20Django%204%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fdjango-template.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994241/random/django.png)
+# HACC Backend
 
-# Django + Vercel
+## Overview
+This backend simulates household energy usage on a display using numbers, bar graphs, or line charts. When an appliance is turned on, the display increases by a typical energy value, helping users understand home energy consumption. These values are based on common appliance data, making the simulation educational and easy to relate to.
 
-This example shows how to use Django 4 on Vercel with Serverless Functions using the [Python Runtime](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python).
 
-## Demo
+## Requirement
+In the physical playhouse, kids will use toggle switches to trigger values for display. For the code challenge, only the output display and visualization are needed, not the full Arduino input system. However, an Arduino-compatible way to feed signals to the display would be beneficial.
 
-https://django-template.vercel.app/
+## Run Backend Locally
+Clone down repo.
 
-## How it Works
-
-Our Django application, `example` is configured as an installed application in `api/settings.py`:
-
-```python
-# api/settings.py
-INSTALLED_APPS = [
-    # ...
-    'example',
-]
+```
+git clone https://github.com/PhatCa/hacc-comp-sience-backend.git
 ```
 
-We allow "\*.vercel.app" subdomains in `ALLOWED_HOSTS`, in addition to 127.0.0.1:
+Create virtual env.
 
-```python
-# api/settings.py
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+```
+python -m venv venv
+or 
+python3 -m venv venv
 ```
 
-The `wsgi` module must use a public variable named `app` to expose the WSGI application:
+Activate virtual env.
+Example:
 
-```python
-# api/wsgi.py
-app = get_wsgi_application()
+```text
+source venv/bin/activate
 ```
 
-The corresponding `WSGI_APPLICATION` setting is configured to use the `app` variable from the `api.wsgi` module:
+Install Python requirements.
 
-```python
-# api/settings.py
-WSGI_APPLICATION = 'api.wsgi.app'
+```text
+pip install -r requirements.txt
+or
+pip3 install -r requirements.txt
 ```
 
-There is a single view which renders the current time in `example/views.py`:
+Run Django server
 
-```python
-# example/views.py
-from datetime import datetime
-
-from django.http import HttpResponse
-
-
-def index(request):
-    now = datetime.now()
-    html = f'''
-    <html>
-        <body>
-            <h1>Hello from Vercel!</h1>
-            <p>The current time is { now }.</p>
-        </body>
-    </html>
-    '''
-    return HttpResponse(html)
-```
-
-This view is exposed a URL through `example/urls.py`:
-
-```python
-# example/urls.py
-from django.urls import path
-
-from example.views import index
-
-
-urlpatterns = [
-    path('', index),
-]
-```
-
-Finally, it's made accessible to the Django server inside `api/urls.py`:
-
-```python
-# api/urls.py
-from django.urls import path, include
-
-urlpatterns = [
-    ...
-    path('', include('example.urls')),
-]
-```
-
-This example uses the Web Server Gateway Interface (WSGI) with Django to enable handling requests on Vercel with Serverless Functions.
-
-## Running Locally
-
-```bash
+```text
 python manage.py runserver
+or
+python3 manage.py runserver
 ```
 
-Your Django application is now available at `http://localhost:8000`.
+You may need to run `python manage.py migrate or python3 manage.py migrate`
+To set up user, run `python manage.py createsuperuser`
 
-## One-Click Deploy
+## Design
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+### Visual
+![Visual Design](readme_assets/visual_design.png)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fdjango&demo-title=Django%20%2B%20Vercel&demo-description=Use%20Django%204%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fdjango-template.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994241/random/django.png)
+
+1. Data Models: 
+
+ID: BigAutoField
+name: CharField
+power_usage: FloatField
+is_on: BooleanField(default=False)
+
+2. API Design:
+
+* GET:
+Fetch all appliance  where is_on = true
+Sum up all these power_usage value and return to front end
+
+* POST:
+Update is_on status for appliance by referencing its ID
+
+
+## Optional
+"The program we are looking for in the code challenge is just the display
+part, not the full input Arduino system. Just the output display and
+visualization. But we would appreciate it if we had an arduino-friendly way
+of feeding the display the signals." - [Special Requirements](https://hacc.hawaii.gov/wp-content/uploads/2024/10/HKM-Energy-Usage-Challenge_2024.pdf)
+
+### Basic Approach to get data for front end
+Front end using polling to send a GET request to get update and set timer to be every 5 second
+
+### WebSockets(Real-Time Approach)
+Set up Channel and Web Socket to get real-time update
+
+## Additional document for backend for Channel and Websocket
+
+1. [Introduction to Django Channels and WebSocket - 2023](https://medium.com/@adabur/introduction-to-django-channels-and-websockets-cb38cd015e29)
+
+2. [Building Dynamic Real-Time Apps with Django Channels - 2023](https://medium.com/@joloiuy/building-dynamic-real-time-apps-with-django-channels-8373fc173a1b)
+
+
+

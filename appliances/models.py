@@ -11,3 +11,12 @@ class Appliance(models.Model):
     def __str__(self):
         return self.name
     
+    def turn_on(self):
+        if not self.is_on:
+            self.is_on = True
+            self.save()
+    
+    def turn_off(self):
+        if self.is_on:
+            self.is_on = False
+            self.save()

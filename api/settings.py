@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,15 +85,14 @@ try:
     print('imported settings')
 except ImportError:
     print('did not import local settings')
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': 'aws-0-us-west-1.pooler.supabase.com',
-            'USER': 'postgres.hfwjjkjhzcncoiepadzz',
-            'PASSWORD': 'YRGWUP0Bs0Er4qmN',
-            'NAME': 'postgres',
-            "PORT": "6543",
+            'HOST': os.getenv('DATABASE_HOST'),
+            'USER': os.getenv('DATABASE_USER'),
+            'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+            'NAME': os.getenv('DATABASE_NAME'),
+            "PORT": os.getenv('DATABASE_PORT'),
         }
     }
 

@@ -91,3 +91,17 @@ Set up Channel and Web Socket to get real-time update
 
 
 
+## Local Testing (important)
+
+Create a local_settings.py file and needed to be in api folder (same directory with settings.py) to create a sqlite3 local database instead using production database
+
+```django
+from pathlib import Path
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+DEBUG=True
+```

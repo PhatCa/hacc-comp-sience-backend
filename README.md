@@ -91,3 +91,21 @@ Set up Channel and Web Socket to get real-time update
 
 
 
+## Local Development (Important)
+
+Inside API make a file name local_settings.py (same folder with settings.py) and add the code below into it. This is for local development.
+
+```django
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+DEBUG=True
+
+DATABASES = {
+  "default":{
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
+  }
+}
+```

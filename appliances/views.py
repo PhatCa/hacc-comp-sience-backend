@@ -6,30 +6,24 @@ from .serializers import ApplianceSerializer, PowerUsageSerializer
 from django.db.models import Sum
 
 class ApplianceToggleView(APIView):
-    def post(self, request):
-        appliance_ids = request.data.get('appliance_ids', [])
-        action = request.data.get('action')
-
-        if not appliance_ids or not action:
-            return Response({'error': 'Missing appliance_ids or action'}, status=status.HTTP_400_BAD_REQUEST)
-
-        appliances = Appliance.objects.filter(id__in=appliance_ids)
-        if not appliances.exists():
-            return Response({'error': 'One or more appliances not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        messages = []
-        for appliance in appliances:
+    def post(self, request, id):
+        try:
+            appliance = Appliance.objects.get(id=id)
+            action = request.data.get('action')
+            
             if action == 'on':
                 appliance.turn_on()
-                messages.append(f"{appliance.name} turned on.")
+                message = f"{appliance.name} turned on."
             elif action == 'off':
                 appliance.turn_off()
-                messages.append(f"{appliance.name} turned off.")
+                message = f"{appliance.name} turned off."
             else:
                 return Response({'error': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = ApplianceSerializer(appliances, many=True)
-        return Response({'messages': messages, 'appliances': serializer.data})
+            
+            return Response({'message': message, 'is_on': appliance.is_on})
+        
+        except Appliance.DoesNotExist:
+            return Response({'error': 'Appliance not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ApplianceEnergyUsageView(APIView):

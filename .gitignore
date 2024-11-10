@@ -4,8 +4,7 @@
 __pycache__
 db.sqlite3
 media
-/static/       
-!*/static/
+
 
 # Environments 
 .env 

@@ -9,19 +9,10 @@ class ApplianceToggleView(APIView):
     def post(self, request, id):
         try:
             appliance = Appliance.objects.get(id=id)
-            action = request.data.get('action')
-            
-            if action == 'on':
-                appliance.turn_on()
-                message = f"{appliance.name} turned on."
-            elif action == 'off':
-                appliance.turn_off()
-                message = f"{appliance.name} turned off."
-            else:
-                return Response({'error': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
-            
+            appliance.is_on = not appliance.is_on
+            appliance.save()
+            message = "success"
             return Response({'message': message, 'is_on': appliance.is_on})
-        
         except Appliance.DoesNotExist:
             return Response({'error': 'Appliance not found'}, status=status.HTTP_404_NOT_FOUND)
 

@@ -4,7 +4,7 @@ from .models import Appliance
 class ApplianceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appliance
-        fields = ['id', 'name', 'power_usage', 'is_on']
+        fields = '__all__'
         
         
 class PowerUsageSerializer(serializers.Serializer):
